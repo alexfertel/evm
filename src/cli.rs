@@ -18,6 +18,7 @@ enum Commands {
     Run(Run),
 }
 
+/// Turn assembly code into bytecode.
 #[derive(Parser, Debug)]
 pub struct Assemble {}
 
@@ -25,6 +26,7 @@ impl Assemble {
     fn run(&self) {}
 }
 
+/// Turn bytecode into assembly code.
 #[derive(Parser, Debug)]
 pub struct Disassemble {}
 
@@ -32,6 +34,7 @@ impl Disassemble {
     fn run(&self) {}
 }
 
+/// Execute bytecode.
 #[derive(Parser, Debug)]
 pub struct Run {}
 
