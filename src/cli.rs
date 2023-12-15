@@ -1,5 +1,7 @@
 use clap::{Parser, Subcommand};
 
+use crate::{Contract, Interpreter};
+
 /// This is the entry point to the executable.
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)] // Read from `Cargo.toml`
@@ -36,10 +38,22 @@ impl Disassemble {
 
 /// Execute bytecode.
 #[derive(Parser, Debug)]
-pub struct Run {}
+pub struct Run {
+    /// The hex string representing the bytecode to run.
+    #[arg(long)]
+    code: String,
+}
 
 impl Run {
-    fn run(&self) {}
+    fn run(&self) {
+        let bytecode = self.code.parse().unwrap();
+        let contract = Box::new(Contract::new(bytecode));
+        let interpreter = Interpreter::new(contract);
+        match interpreter.execute() {
+            Ok(bytes) => println!("{bytes}"),
+            Err(e) => eprintln!("{e}"),
+        }
+    }
 }
 
 pub fn run() -> eyre::Result<()> {
