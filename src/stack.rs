@@ -58,13 +58,13 @@ impl Stack {
         Ok(())
     }
 
-    pub fn peek(&self) -> Option<U256> {
-        if self.stack.borrow().len() == 0 {
+    pub fn peek(&self, index: usize) -> Option<U256> {
+        if self.stack.borrow().len() < index + 1 {
             return None;
         }
 
         let stack = self.stack.borrow();
-        Some(stack[stack.len() - 1])
+        Some(stack[stack.len() - index - 1])
     }
 
     pub fn pop(&self) -> eyre::Result<U256> {
@@ -79,9 +79,41 @@ impl Stack {
             .expect("should pop from the stack"))
     }
 
+    pub fn dup(&self, index: usize) -> eyre::Result<()> {
+        if self.stack.borrow().len() < index + 1 {
+            return Err(anyhow!("stack underflow"));
+        }
+
+        let mut stack = self.stack.borrow_mut();
+        let index = stack.len() - index - 1;
+        let elem = stack[index];
+        stack.push(elem);
+        Ok(())
+    }
+
+    pub fn swap(&self, index: usize) -> eyre::Result<()> {
+        if index == 0 {
+            return Err(anyhow!("invalid index"));
+        } else if self.stack.borrow().len() < index + 1 {
+            return Err(anyhow!("stack underflow"));
+        }
+
+        let mut stack = self.stack.borrow_mut();
+        let len = stack.len();
+        let index = len - index - 1;
+        stack.swap(index, len - 1);
+        Ok(())
+    }
+
     #[cfg(test)]
     fn len(&self) -> usize {
         self.stack.borrow().len()
+    }
+
+    #[cfg(test)]
+    fn into_iter(&self) -> std::vec::IntoIter<alloy_primitives::Uint<256, 4>> {
+        let stack = self.stack.borrow().clone();
+        stack.into_iter()
     }
 }
 
@@ -116,7 +148,7 @@ mod tests {
         stack
             .push_slice(&[0, 1, 2, 3])
             .expect("should push onto the stack");
-        assert_eq!(66051u64, u64::try_from(stack.peek().unwrap()).unwrap());
+        assert_eq!(66051u64, u64::try_from(stack.peek(0).unwrap()).unwrap());
     }
 
     #[test]
@@ -156,7 +188,94 @@ mod tests {
         let stack = Stack::new(STACK_SIZE);
         let expected = U256::from(1);
         stack.push(expected).expect("should push onto the stack");
-        let actual = stack.peek().expect("should peek the stack");
+        let actual = stack.peek(0).expect("should peek the stack");
         assert_eq!(expected, actual);
+
+        stack
+            .push(U256::from(2))
+            .expect("should push onto the stack");
+        let actual = stack.peek(1).expect("should peek the stack");
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn dups_last() {
+        let stack = Stack::new(STACK_SIZE);
+        let expected = U256::from(1);
+        stack.push(expected).expect("should push onto the stack");
+        stack
+            .dup(0)
+            .expect("should dup the last element on the stack");
+        assert_eq!(2, stack.len());
+        let actual = stack.peek(0).expect("should peek the stack");
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn dups_second_to_last() {
+        let stack = Stack::new(STACK_SIZE);
+        let expected = U256::from(1);
+        stack.push(expected).expect("should push onto the stack");
+        stack
+            .push(U256::from(2))
+            .expect("should push onto the stack");
+        stack
+            .dup(1)
+            .expect("should dup the second to last element on the stack");
+        assert_eq!(3, stack.len());
+        let actual = stack.peek(0).expect("should peek the stack");
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn swaps_zero_errors() {
+        let stack = Stack::new(STACK_SIZE);
+        let expected = U256::from(1);
+        stack.push(expected).expect("should push onto the stack");
+        stack
+            .push(U256::from(2))
+            .expect("should push onto the stack");
+        let e = stack.swap(0);
+        assert_eq!(true, matches!(e, Err(_)));
+    }
+
+    #[test]
+    fn swaps_last() {
+        let stack = Stack::new(STACK_SIZE);
+        stack
+            .push(U256::from(1))
+            .expect("should push onto the stack");
+        stack
+            .push(U256::from(2))
+            .expect("should push onto the stack");
+        stack
+            .swap(1)
+            .expect("should swap the last two elements on the stack");
+        let actual = stack.peek(0).expect("should peek the stack");
+        assert_eq!(U256::from(1), actual);
+        let actual = stack.peek(1).expect("should peek the stack");
+        assert_eq!(U256::from(2), actual);
+    }
+
+    #[test]
+    fn swaps_second_to_last() {
+        let stack = Stack::new(STACK_SIZE);
+        stack
+            .push(U256::from(1))
+            .expect("should push onto the stack");
+        stack
+            .push(U256::from(2))
+            .expect("should push onto the stack");
+        stack
+            .push(U256::from(3))
+            .expect("should push onto the stack");
+        stack
+            .swap(2)
+            .expect("should dup the second to last element on the stack");
+        let all_equal = vec![U256::from(3), U256::from(2), U256::from(1)]
+            .into_iter()
+            .zip(stack.into_iter())
+            .all(|(a, b)| a == b);
+        assert_eq!(true, all_equal);
     }
 }

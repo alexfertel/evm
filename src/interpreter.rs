@@ -99,4 +99,52 @@ mod tests {
         let result = interpreter.execute().expect("should finish execution");
         assert_eq!("0x2a".parse::<Bytes>().unwrap(), result);
     }
+
+    #[test]
+    fn returns_four_squared() {
+        //             # stack
+        // PUSH1, 4,   # n=4
+        // DUP1,       # n=4, loops=4
+        // PUSH1, 0,   # n=4, loops=4, result=0
+        //
+        // # loop_cond
+        // # if loops != 0, jump to loop_body
+        // JUMPDEST,
+        // DUP2,       # n, loops, result, loops
+        // PUSH1, 18,  # n, loops, result, loops, loop_body
+        // JUMPI,      # n, loops, result
+        //
+        // # return result
+        // PUSH1, 0,   # n, loops, result, m_result
+        // MSTORE8,    # n, loops
+        // PUSH1, 1,   # n, loops, mem_length
+        // PUSH1, 0,   # n, loops, mem_length, mem_offset
+        // RETURN,
+        //
+        // # loop_body
+        // JUMPDEST,
+        //
+        // # result += n
+        // DUP3,       # n, loops, result, n
+        // ADD,        # n, loops, result'=n+result
+        //
+        // # loops -= 1
+        // SWAP1,      # n, result', loops
+        // PUSH1, 1,   # n, result', loops, 1
+        // SWAP1,      # n, result', 1, loops
+        // SUB,        # n, result', loops'=loops-1
+        //
+        // # restore stack
+        // SWAP1,      # n, loops', result'
+        //
+        // # jump to loop_cond
+        // PUSH1, 5,   # n, loops', result', loop_cond
+        // JUMP,       # -> back to loop_cond
+        let bytecode = "60048060005b8160125760005360016000f35b8201906001900390600556";
+        let bytes = bytecode.parse().unwrap();
+        let contract = Box::new(Contract::new(bytes));
+        let interpreter = Interpreter::new(contract);
+        let result = interpreter.execute().expect("should finish execution");
+        assert_eq!("0x10".parse::<Bytes>().unwrap(), result);
+    }
 }

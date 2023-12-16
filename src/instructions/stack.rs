@@ -18,3 +18,13 @@ pub fn push<const N: usize>(interpreter: &Interpreter) -> InstructionResult {
 
     Ok(N + 1)
 }
+
+pub fn dup<const N: usize>(interpreter: &Interpreter) -> InstructionResult {
+    interpreter.stack.dup(N - 1)?;
+    Ok(1)
+}
+
+pub fn swap<const N: usize>(interpreter: &Interpreter) -> InstructionResult {
+    interpreter.stack.swap(N)?;
+    Ok(1)
+}
