@@ -18,8 +18,8 @@ impl Memory {
         *self.inner.borrow_mut().entry(addr).or_default()
     }
 
-    pub fn load_range(&self, addr: U256, length: u8) -> Bytes {
-        let mut bytes = Vec::with_capacity(length as usize);
+    pub fn load_range(&self, addr: U256, length: usize) -> Bytes {
+        let mut bytes = Vec::with_capacity(length);
         for i in 0..length {
             let byte = self.load(addr.saturating_add(U256::from(i)));
             bytes.push(byte);

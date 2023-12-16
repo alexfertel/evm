@@ -4,6 +4,7 @@ use alloy_primitives::{Bytes, U256};
 
 use crate::{
     instructions::{opcode::instruction, Instruction},
+    utils::ToUsize,
     Contract, Memory, Stack,
 };
 
@@ -13,7 +14,7 @@ pub struct Interpreter {
     pub memory: Memory,
     pub contract: Box<Contract>,
     pub gas: Cell<U256>,
-    pub instruction_pointer: Cell<usize>,
+    pub instruction_pointer: Cell<U256>,
     pub return_data_buffer: RefCell<Bytes>,
     pub stopped: Cell<bool>,
 }
@@ -36,7 +37,11 @@ impl Interpreter {
     }
 
     pub fn next(&self) -> Instruction {
-        let ip = self.instruction_pointer.get();
+        let ip = self
+            .instruction_pointer
+            .get()
+            .as_usize()
+            .expect("ip should fit in a usize");
 
         // Section 9.4.1 of the yellowpaper, the operation to be executed if the
         // instruction pointer is outside code is STOP.
@@ -44,7 +49,7 @@ impl Interpreter {
             return instruction(0);
         }
 
-        let opcode = self.contract.bytecode[ip];
+        let opcode = self.contract.bytecode.bytes[ip];
         instruction(opcode)
     }
 
@@ -52,7 +57,7 @@ impl Interpreter {
         while !self.stopped.get() {
             let instruction = self.next();
             let offset = instruction(self)?;
-            let ip = self.instruction_pointer.get() + offset;
+            let ip = self.instruction_pointer.get() + U256::from(offset);
             self.instruction_pointer.set(ip);
         }
 
@@ -79,6 +84,14 @@ mod tests {
 
     #[test]
     fn returns_mul_result() {
+        // PUSH 0x6
+        // PUSH 0x7
+        // MUL
+        // PUSH 0x0
+        // MSTORE8
+        // PUSH 0x1
+        // PUSH 0x0
+        // RETURN
         let bytecode = "0x600660070260005360016000f3";
         let bytes = bytecode.parse().unwrap();
         let contract = Box::new(Contract::new(bytes));

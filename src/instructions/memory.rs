@@ -1,10 +1,10 @@
+use alloy_primitives::U256;
 use std::ops::Rem;
 
-use alloy_primitives::U256;
-
+use super::InstructionResult;
 use crate::Interpreter;
 
-pub fn mstore8(interpreter: &Interpreter) -> eyre::Result<usize> {
+pub fn mstore8(interpreter: &Interpreter) -> InstructionResult {
     let addr = interpreter.stack.pop()?;
     let word = interpreter.stack.pop()?;
     let byte = word.rem(U256::from(256)).byte(0);

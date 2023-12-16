@@ -2,7 +2,7 @@ use alloy_primitives::U256;
 
 use crate::Interpreter;
 
-pub type InstructionResult = eyre::Result<usize>;
+use super::InstructionResult;
 
 pub fn add(interpreter: &Interpreter) -> InstructionResult {
     let a = interpreter.stack.pop()?;

@@ -6,4 +6,5 @@ pub mod memory;
 pub mod opcode;
 pub mod stack;
 
-pub type Instruction = fn(&Interpreter) -> eyre::Result<usize>;
+pub type InstructionResult = eyre::Result<usize>;
+pub type Instruction = fn(&Interpreter) -> InstructionResult;
