@@ -94,7 +94,7 @@ mod tests {
         // RETURN
         let bytecode = "0x600660070260005360016000f3";
         let bytes = bytecode.parse().unwrap();
-        let contract = Box::new(Contract::new(bytes));
+        let contract = Box::new(Contract::new(Default::default(), bytes, Default::default()));
         let interpreter = Interpreter::new(contract);
         let result = interpreter.execute().expect("should finish execution");
         assert_eq!("0x2a".parse::<Bytes>().unwrap(), result);
@@ -142,7 +142,7 @@ mod tests {
         // JUMP,       # -> back to loop_cond
         let bytecode = "60048060005b8160125760005360016000f35b8201906001900390600556";
         let bytes = bytecode.parse().unwrap();
-        let contract = Box::new(Contract::new(bytes));
+        let contract = Box::new(Contract::new(Default::default(), bytes, Default::default()));
         let interpreter = Interpreter::new(contract);
         let result = interpreter.execute().expect("should finish execution");
         assert_eq!("0x10".parse::<Bytes>().unwrap(), result);

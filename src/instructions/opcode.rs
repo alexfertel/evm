@@ -1,4 +1,4 @@
-use super::{arithmetic, control, memory, stack, Instruction};
+use super::{arithmetic, bitwise, control, memory, stack, system, Instruction};
 
 macro_rules! opcodes {
     ($($val:literal => $name:ident => $f:expr),* $(,)?) => {
@@ -50,20 +50,20 @@ opcodes! {
     // 0x0D
     // 0x0E
     // 0x0F
-    // 0x10 => LT     => bitwise::lt,
-    // 0x11 => GT     => bitwise::gt,
-    // 0x12 => SLT    => bitwise::slt,
-    // 0x13 => SGT    => bitwise::sgt,
-    // 0x14 => EQ     => bitwise::eq,
-    // 0x15 => ISZERO => bitwise::iszero,
-    // 0x16 => AND    => bitwise::bitand,
-    // 0x17 => OR     => bitwise::bitor,
-    // 0x18 => XOR    => bitwise::bitxor,
-    // 0x19 => NOT    => bitwise::not,
-    // 0x1A => BYTE   => bitwise::byte,
-    // 0x1B => SHL    => bitwise::shl,
-    // 0x1C => SHR    => bitwise::shr,
-    // 0x1D => SAR    => bitwise::sar,
+    0x10 => LT     => bitwise::lt,
+    0x11 => GT     => bitwise::gt,
+    0x12 => SLT    => bitwise::slt,
+    0x13 => SGT    => bitwise::sgt,
+    0x14 => EQ     => bitwise::eq,
+    0x15 => ISZERO => bitwise::iszero,
+    0x16 => AND    => bitwise::and,
+    0x17 => OR     => bitwise::or,
+    0x18 => XOR    => bitwise::xor,
+    0x19 => NOT    => bitwise::not,
+    0x1A => BYTE   => bitwise::byte,
+    0x1B => SHL    => bitwise::shl,
+    0x1C => SHR    => bitwise::shr,
+    0x1D => SAR    => bitwise::sar,
     // 0x1E
     // 0x1F
     // 0x20 => KECCAK256 => system::keccak256,
@@ -87,9 +87,9 @@ opcodes! {
     // 0x32 => ORIGIN         => host_env::origin,
     // 0x33 => CALLER         => system::caller,
     // 0x34 => CALLVALUE      => system::callvalue,
-    // 0x35 => CALLDATALOAD   => system::calldataload,
-    // 0x36 => CALLDATASIZE   => system::calldatasize,
-    // 0x37 => CALLDATACOPY   => system::calldatacopy,
+    0x35 => CALLDATALOAD   => system::calldataload,
+    0x36 => CALLDATASIZE   => system::calldatasize,
+    0x37 => CALLDATACOPY   => system::calldatacopy,
     // 0x38 => CODESIZE       => system::codesize,
     // 0x39 => CODECOPY       => system::codecopy,
     //

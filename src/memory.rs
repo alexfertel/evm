@@ -31,6 +31,13 @@ impl Memory {
         self.inner.borrow_mut().insert(addr, byte);
     }
 
+    pub fn copy_from_bytes(&self, addr: U256, bytes: Bytes) {
+        for i in 0..bytes.len() {
+            let ith_addr = addr.saturating_add(U256::from(i));
+            self.store(ith_addr, bytes[i]);
+        }
+    }
+
     pub fn len(&self) -> usize {
         self.inner.borrow().len()
     }
@@ -61,10 +68,20 @@ mod tests {
     }
 
     #[test]
+    fn loads_range() {
+        todo!();
+    }
+
+    #[test]
     fn cold_load_stores_default() {
         let memory = Memory::new();
         let loaded = memory.load(U256::from(0));
         assert_eq!(u8::from(0), loaded);
         assert_eq!(1, memory.len())
+    }
+
+    #[test]
+    fn copies_from_bytes() {
+        todo!();
     }
 }

@@ -42,12 +42,20 @@ pub struct Run {
     /// The hex string representing the bytecode to run.
     #[arg(long)]
     code: String,
+    /// The hex string representing the calldata passed as input.
+    #[arg(long)]
+    calldata: String,
 }
 
 impl Run {
     fn run(&self) {
         let bytecode = self.code.parse().unwrap();
-        let contract = Box::new(Contract::new(bytecode));
+        let input = self.calldata.parse().unwrap_or_default();
+        let contract = Box::new(Contract::new(
+            alloy_primitives::Address::ZERO,
+            bytecode,
+            input,
+        ));
         let interpreter = Interpreter::new(contract);
         match interpreter.execute() {
             Ok(bytes) => println!("{bytes}"),
