@@ -1,6 +1,8 @@
 use std::{cell::RefCell, collections::HashMap};
 
-use alloy_primitives::{Bytes, U256};
+use alloy_primitives::{Bytes, B256, U256};
+
+use crate::constants::WORD_SIZE_BYTES;
 
 #[derive(Debug, Default)]
 pub struct Memory {
@@ -18,13 +20,32 @@ impl Memory {
         *self.inner.borrow_mut().entry(addr).or_default()
     }
 
-    pub fn load_range(&self, addr: U256, length: usize) -> Bytes {
+    pub fn load_range<const N: usize>(&self, addr: U256) -> [u8; N] {
+        let mut bytes = [0; N];
+        for i in 0..N {
+            let byte = match addr.checked_add(U256::from(i)) {
+                Some(addr) => self.load(addr),
+                None => 0u8,
+            };
+            bytes[i] = byte;
+        }
+        bytes
+    }
+
+    pub fn load_bytes(&self, addr: U256, length: usize) -> Bytes {
         let mut bytes = Vec::with_capacity(length);
         for i in 0..length {
-            let byte = self.load(addr.saturating_add(U256::from(i)));
+            let byte = match addr.checked_add(U256::from(i)) {
+                Some(addr) => self.load(addr),
+                None => 0u8,
+            };
             bytes.push(byte);
         }
-        Bytes::from(bytes)
+        bytes.into()
+    }
+
+    pub fn load_word(&self, addr: U256) -> U256 {
+        B256::from(self.load_range::<WORD_SIZE_BYTES>(addr)).into()
     }
 
     pub fn store(&self, addr: U256, byte: u8) {
@@ -68,7 +89,14 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn loads_range() {
+        todo!();
+    }
+
+    #[test]
+    #[ignore]
+    fn loads_bytes() {
         todo!();
     }
 
@@ -81,6 +109,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn copies_from_bytes() {
         todo!();
     }

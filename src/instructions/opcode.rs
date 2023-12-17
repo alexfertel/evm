@@ -63,7 +63,7 @@ opcodes! {
     0x1A => BYTE   => bitwise::byte,
     0x1B => SHL    => bitwise::shl,
     0x1C => SHR    => bitwise::shr,
-    0x1D => SAR    => bitwise::sar,
+    // 0x1D => SAR    => bitwise::sar,
     // 0x1E
     // 0x1F
     // 0x20 => KECCAK256 => system::keccak256,
@@ -115,9 +115,9 @@ opcodes! {
     // 0x4D
     // 0x4E
     // 0x4F
-    // 0x50 => POP      => stack::pop,
-    // 0x51 => MLOAD    => memory::mload,
-    // 0x52 => MSTORE   => memory::mstore,
+    0x50 => POP      => stack::pop,
+    0x51 => MLOAD    => memory::mload,
+    0x52 => MSTORE   => memory::mstore,
     0x53 => MSTORE8  => memory::mstore8,
     // 0x54 => SLOAD    => host::sload,
     // 0x55 => SSTORE   => host::sstore,

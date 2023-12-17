@@ -48,7 +48,7 @@ pub fn ret(interpreter: &Interpreter) -> InstructionResult {
     let addr = interpreter.stack.pop()?;
     let length = interpreter.stack.pop()?.as_usize()?;
     if length != 0 {
-        let bytes = interpreter.memory.load_range(addr, length);
+        let bytes = interpreter.memory.load_bytes(addr, length);
         *interpreter.return_data_buffer.borrow_mut() = bytes;
     }
     interpreter.stop();

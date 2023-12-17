@@ -42,7 +42,7 @@ pub fn calldatacopy(interpreter: &Interpreter) -> InstructionResult {
         slice[..bytes].copy_from_slice(data_slice);
         Bytes::from(slice)
     } else {
-        Bytes::from([0u8; 32])
+        Bytes::from([0u8; WORD_SIZE_BYTES])
     };
 
     interpreter.memory.copy_from_bytes(mem_offset, bytes);
