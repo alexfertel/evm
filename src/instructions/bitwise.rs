@@ -114,3 +114,11 @@ pub fn shr(interpreter: &Interpreter) -> InstructionResult {
     interpreter.stack.push(r)?;
     Ok(1)
 }
+
+pub fn sar(interpreter: &Interpreter) -> InstructionResult {
+    let shift = interpreter.stack.pop()?;
+    let word = interpreter.stack.pop()?;
+    let r = word.arithmetic_shr(shift.as_usize_saturated());
+    interpreter.stack.push(r)?;
+    Ok(1)
+}

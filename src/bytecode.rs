@@ -14,7 +14,7 @@ pub struct Bytecode {
 impl Default for Bytecode {
     fn default() -> Self {
         // A single STOP opcode.
-        let bytes = "00".parse().unwrap();
+        let bytes = Bytes::from([0; 2]);
         let jumpset = create_jumpset(&bytes);
         Self { bytes, jumpset }
     }

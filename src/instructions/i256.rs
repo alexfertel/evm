@@ -33,12 +33,11 @@ mod tests {
 
     use super::i256_cmp;
 
-    const MSB_BITMASK_U64: u64 = 0x7FFFFFFFFFFFFFFF;
+    const MSB_BITMASK_U64: u64 = 0x8000000000000000;
 
-    fn u256_remove_sign(val: &U256) -> U256 {
-        let mut limbs = val.into_limbs();
-        limbs[3] &= MSB_BITMASK_U64;
-        U256::from_limbs(limbs)
+    fn u256_flip_sign(val: &mut U256) {
+        // SAFETY: U256 does not have any padding bytes.
+        unsafe { val.as_limbs_mut()[3] ^= MSB_BITMASK_U64 }
     }
 
     fn u(value: usize) -> U256 {
@@ -49,7 +48,8 @@ mod tests {
     fn cmps_i256() {
         let zero = U256::ZERO;
         let max = U256::MAX;
-        let max_positive = u256_remove_sign(&max);
+        let mut max_positive = U256::MAX;
+        u256_flip_sign(&mut max_positive);
         assert_eq!(Ordering::Equal, i256_cmp(&zero, &zero));
         assert_eq!(Ordering::Less, i256_cmp(&u(0), &u(1)));
         assert_eq!(Ordering::Greater, i256_cmp(&u(1), &u(0)));
