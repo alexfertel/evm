@@ -55,6 +55,11 @@ pub fn ret(interpreter: &Interpreter) -> InstructionResult {
     Ok(0)
 }
 
+pub fn invalid(interpreter: &Interpreter) -> InstructionResult {
+    interpreter.stop();
+    Ok(0)
+}
+
 pub fn unknown(interpreter: &Interpreter) -> InstructionResult {
     interpreter.stop();
     Ok(0)

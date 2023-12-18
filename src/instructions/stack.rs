@@ -1,6 +1,13 @@
+use alloy_primitives::U256;
+
 use crate::{utils::ToUsize, Interpreter};
 
 use super::InstructionResult;
+
+pub fn push0(interpreter: &Interpreter) -> InstructionResult {
+    interpreter.stack.push(U256::ZERO)?;
+    Ok(1)
+}
 
 pub fn push<const N: usize>(interpreter: &Interpreter) -> InstructionResult {
     let ip = interpreter.instruction_pointer.get().as_usize()?;

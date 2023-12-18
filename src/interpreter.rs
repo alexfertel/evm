@@ -84,13 +84,13 @@ mod tests {
 
     #[test]
     fn returns_mul_result() {
-        // PUSH 0x6
-        // PUSH 0x7
+        // PUSH1 0x06
+        // PUSH1 0x07
         // MUL
-        // PUSH 0x0
+        // PUSH1 0x00
         // MSTORE8
-        // PUSH 0x1
-        // PUSH 0x0
+        // PUSH1 0x01
+        // PUSH1 0x00
         // RETURN
         let bytecode = "0x600660070260005360016000f3";
         let bytes = bytecode.parse().unwrap();

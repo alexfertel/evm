@@ -9,7 +9,7 @@ macro_rules! opcodes {
         )*
 
         /// Maps each opcode to its name.
-        pub const OPCODE_JUMPMAP: [Option<&'static str>; 256] = {
+        pub const OPCODE_NAMES: [Option<&'static str>; 256] = {
             let mut map = [None; 256];
             let mut prev: u8 = 0;
             $(
@@ -27,6 +27,14 @@ macro_rules! opcodes {
             match opcode {
                 $($name => $f,)*
                 _ => control::unknown,
+            }
+        }
+
+        /// Returns the instruction opcode given it's name.
+        pub fn opcode(name: &str) -> u8 {
+            match name {
+                $(stringify!($name) => $val,)*
+                _ => 0xFE,
             }
         }
     };
@@ -131,7 +139,7 @@ opcodes! {
     // 0x5D => TSTORE   => host::tstore,
     // 0x5E => MCOPY    => memory::mcopy,
     //
-    // 0x5F => PUSH0  => stack::push0,
+    0x5F => PUSH0  => stack::push0,
     0x60 => PUSH1  => stack::push::<1>,
     0x61 => PUSH2  => stack::push::<2>,
     0x62 => PUSH3  => stack::push::<3>,
@@ -293,6 +301,6 @@ opcodes! {
     // 0xFB
     // 0xFC
     // 0xFD => REVERT       => control::revert,
-    // 0xFE => INVALID      => control::invalid,
+    0xFE => INVALID      => control::invalid,
     // 0xFF => SELFDESTRUCT => host::selfdestruct,
 }
