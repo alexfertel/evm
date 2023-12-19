@@ -4,7 +4,7 @@ use crate::Interpreter;
 
 use super::InstructionResult;
 
-pub fn add(interpreter: &Interpreter) -> InstructionResult {
+pub fn add(interpreter: &mut Interpreter) -> InstructionResult {
     let a = interpreter.stack.pop()?;
     let b = interpreter.stack.pop()?;
     interpreter.stack.push(a.wrapping_add(b))?;
@@ -12,7 +12,7 @@ pub fn add(interpreter: &Interpreter) -> InstructionResult {
     Ok(1)
 }
 
-pub fn mul(interpreter: &Interpreter) -> InstructionResult {
+pub fn mul(interpreter: &mut Interpreter) -> InstructionResult {
     let a = interpreter.stack.pop()?;
     let b = interpreter.stack.pop()?;
     interpreter.stack.push(a.wrapping_mul(b))?;
@@ -20,7 +20,7 @@ pub fn mul(interpreter: &Interpreter) -> InstructionResult {
     Ok(1)
 }
 
-pub fn sub(interpreter: &Interpreter) -> InstructionResult {
+pub fn sub(interpreter: &mut Interpreter) -> InstructionResult {
     let a = interpreter.stack.pop()?;
     let b = interpreter.stack.pop()?;
     interpreter.stack.push(a.wrapping_sub(b))?;
@@ -28,7 +28,7 @@ pub fn sub(interpreter: &Interpreter) -> InstructionResult {
     Ok(1)
 }
 
-pub fn div(interpreter: &Interpreter) -> InstructionResult {
+pub fn div(interpreter: &mut Interpreter) -> InstructionResult {
     let a = interpreter.stack.pop()?;
     let b = interpreter.stack.pop()?;
     let r = if b.is_zero() {

@@ -6,7 +6,7 @@ use crate::{utils::ToUsize, Interpreter};
 
 use super::{i256::i256_cmp, InstructionResult};
 
-pub fn lt(interpreter: &Interpreter) -> InstructionResult {
+pub fn lt(interpreter: &mut Interpreter) -> InstructionResult {
     let a = interpreter.stack.pop()?;
     let b = interpreter.stack.pop()?;
     let r = U256::from(a < b);
@@ -14,7 +14,7 @@ pub fn lt(interpreter: &Interpreter) -> InstructionResult {
     Ok(1)
 }
 
-pub fn gt(interpreter: &Interpreter) -> InstructionResult {
+pub fn gt(interpreter: &mut Interpreter) -> InstructionResult {
     let a = interpreter.stack.pop()?;
     let b = interpreter.stack.pop()?;
     let r = U256::from(a > b);
@@ -22,7 +22,7 @@ pub fn gt(interpreter: &Interpreter) -> InstructionResult {
     Ok(1)
 }
 
-pub fn slt(interpreter: &Interpreter) -> InstructionResult {
+pub fn slt(interpreter: &mut Interpreter) -> InstructionResult {
     let a = interpreter.stack.pop()?;
     let b = interpreter.stack.pop()?;
     let r = U256::from(i256_cmp(&a, &b) == Ordering::Less);
@@ -30,7 +30,7 @@ pub fn slt(interpreter: &Interpreter) -> InstructionResult {
     Ok(1)
 }
 
-pub fn sgt(interpreter: &Interpreter) -> InstructionResult {
+pub fn sgt(interpreter: &mut Interpreter) -> InstructionResult {
     let a = interpreter.stack.pop()?;
     let b = interpreter.stack.pop()?;
     let r = U256::from(i256_cmp(&a, &b) == Ordering::Greater);
@@ -38,7 +38,7 @@ pub fn sgt(interpreter: &Interpreter) -> InstructionResult {
     Ok(1)
 }
 
-pub fn eq(interpreter: &Interpreter) -> InstructionResult {
+pub fn eq(interpreter: &mut Interpreter) -> InstructionResult {
     let a = interpreter.stack.pop()?;
     let b = interpreter.stack.pop()?;
     let r = U256::from(a == b);
@@ -46,14 +46,14 @@ pub fn eq(interpreter: &Interpreter) -> InstructionResult {
     Ok(1)
 }
 
-pub fn iszero(interpreter: &Interpreter) -> InstructionResult {
+pub fn iszero(interpreter: &mut Interpreter) -> InstructionResult {
     let a = interpreter.stack.pop()?;
     let r = U256::from(a.is_zero());
     interpreter.stack.push(r)?;
     Ok(1)
 }
 
-pub fn and(interpreter: &Interpreter) -> InstructionResult {
+pub fn and(interpreter: &mut Interpreter) -> InstructionResult {
     let a = interpreter.stack.pop()?;
     let b = interpreter.stack.pop()?;
     let r = U256::from(a & b);
@@ -61,7 +61,7 @@ pub fn and(interpreter: &Interpreter) -> InstructionResult {
     Ok(1)
 }
 
-pub fn or(interpreter: &Interpreter) -> InstructionResult {
+pub fn or(interpreter: &mut Interpreter) -> InstructionResult {
     let a = interpreter.stack.pop()?;
     let b = interpreter.stack.pop()?;
     let r = U256::from(a | b);
@@ -69,7 +69,7 @@ pub fn or(interpreter: &Interpreter) -> InstructionResult {
     Ok(1)
 }
 
-pub fn xor(interpreter: &Interpreter) -> InstructionResult {
+pub fn xor(interpreter: &mut Interpreter) -> InstructionResult {
     let a = interpreter.stack.pop()?;
     let b = interpreter.stack.pop()?;
     let r = U256::from(a ^ b);
@@ -77,13 +77,13 @@ pub fn xor(interpreter: &Interpreter) -> InstructionResult {
     Ok(1)
 }
 
-pub fn not(interpreter: &Interpreter) -> InstructionResult {
+pub fn not(interpreter: &mut Interpreter) -> InstructionResult {
     let a = interpreter.stack.pop()?;
     interpreter.stack.push(!a)?;
     Ok(1)
 }
 
-pub fn byte(interpreter: &Interpreter) -> InstructionResult {
+pub fn byte(interpreter: &mut Interpreter) -> InstructionResult {
     let index = interpreter.stack.pop()?.as_usize_saturated();
     let word = interpreter.stack.pop()?;
 
@@ -99,7 +99,7 @@ pub fn byte(interpreter: &Interpreter) -> InstructionResult {
     Ok(1)
 }
 
-pub fn shl(interpreter: &Interpreter) -> InstructionResult {
+pub fn shl(interpreter: &mut Interpreter) -> InstructionResult {
     let a = interpreter.stack.pop()?;
     let b = interpreter.stack.pop()?;
     let r = U256::from(b << a);
@@ -107,7 +107,7 @@ pub fn shl(interpreter: &Interpreter) -> InstructionResult {
     Ok(1)
 }
 
-pub fn shr(interpreter: &Interpreter) -> InstructionResult {
+pub fn shr(interpreter: &mut Interpreter) -> InstructionResult {
     let a = interpreter.stack.pop()?;
     let b = interpreter.stack.pop()?;
     let r = U256::from(b >> a);
@@ -115,7 +115,7 @@ pub fn shr(interpreter: &Interpreter) -> InstructionResult {
     Ok(1)
 }
 
-pub fn sar(interpreter: &Interpreter) -> InstructionResult {
+pub fn sar(interpreter: &mut Interpreter) -> InstructionResult {
     let shift = interpreter.stack.pop()?;
     let word = interpreter.stack.pop()?;
     let r = word.arithmetic_shr(shift.as_usize_saturated());

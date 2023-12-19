@@ -121,7 +121,7 @@ impl Run {
             bytecode,
             input,
         ));
-        let interpreter = Interpreter::new(contract);
+        let mut interpreter = Interpreter::new(contract);
         match interpreter.execute() {
             Ok(bytes) => println!("{bytes}"),
             Err(e) => eprintln!("{e}"),

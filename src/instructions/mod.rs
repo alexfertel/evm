@@ -10,4 +10,4 @@ pub mod stack;
 pub mod system;
 
 pub type InstructionResult = eyre::Result<usize>;
-pub type Instruction = fn(&Interpreter) -> InstructionResult;
+pub type Instruction = fn(&mut Interpreter) -> InstructionResult;

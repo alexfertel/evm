@@ -53,7 +53,7 @@ impl Interpreter {
         instruction(opcode)
     }
 
-    pub fn execute(&self) -> eyre::Result<Bytes> {
+    pub fn execute(&mut self) -> eyre::Result<Bytes> {
         while !self.stopped.get() {
             let instruction = self.next();
             let offset = instruction(self)?;
@@ -95,7 +95,7 @@ mod tests {
         let bytecode = "0x600660070260005360016000f3";
         let bytes = bytecode.parse().unwrap();
         let contract = Box::new(Contract::new(Default::default(), bytes, Default::default()));
-        let interpreter = Interpreter::new(contract);
+        let mut interpreter = Interpreter::new(contract);
         let result = interpreter.execute().expect("should finish execution");
         assert_eq!("0x2a".parse::<Bytes>().unwrap(), result);
     }
@@ -143,7 +143,7 @@ mod tests {
         let bytecode = "60048060005b8160125760005360016000f35b8201906001900390600556";
         let bytes = bytecode.parse().unwrap();
         let contract = Box::new(Contract::new(Default::default(), bytes, Default::default()));
-        let interpreter = Interpreter::new(contract);
+        let mut interpreter = Interpreter::new(contract);
         let result = interpreter.execute().expect("should finish execution");
         assert_eq!("0x10".parse::<Bytes>().unwrap(), result);
     }
