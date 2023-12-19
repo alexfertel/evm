@@ -132,7 +132,7 @@ opcodes! {
     0x56 => JUMP     => control::jump,
     0x57 => JUMPI    => control::jumpi,
     0x58 => PC       => control::pc,
-    // 0x59 => MSIZE    => memory::msize,
+    0x59 => MSIZE    => memory::msize,
     // 0x5A => GAS      => system::gas,
     0x5B => JUMPDEST => control::jumpdest,
     // 0x5C => TLOAD    => host::tload,

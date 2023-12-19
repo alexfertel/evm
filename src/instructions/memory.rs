@@ -42,3 +42,9 @@ pub fn mstore8(interpreter: &mut Interpreter) -> InstructionResult {
     interpreter.memory.set_byte(addr, byte);
     Ok(1)
 }
+
+pub fn msize(interpreter: &mut Interpreter) -> InstructionResult {
+    let size = interpreter.memory.len();
+    interpreter.stack.push(U256::from(size))?;
+    Ok(1)
+}
