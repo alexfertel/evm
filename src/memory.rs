@@ -11,15 +11,15 @@ pub struct Memory {
 
 impl Default for Memory {
     fn default() -> Self {
-        Self::new()
+        Self {
+            buffer: Vec::with_capacity(FOUR_KB),
+        }
     }
 }
 
 impl Memory {
     pub fn new() -> Self {
-        Self {
-            buffer: Vec::with_capacity(FOUR_KB),
-        }
+        Self::default()
     }
 
     pub fn len(&self) -> usize {
